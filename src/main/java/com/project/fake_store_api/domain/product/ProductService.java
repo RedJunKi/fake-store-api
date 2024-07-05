@@ -22,11 +22,57 @@ public class ProductService {
     }
 
     public Product findOne(Long productId) {
-        return productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("없는 상품입니다."));
+        return findById(productId);
     }
 
     public List<Product> findWithLimit(Long limit) {
         return productRepositoryImpl.findWithLimit(limit);
+    }
+
+    public List<String> getCategories() {
+        List<Category> categories = productRepositoryImpl.findCategories();
+
+        return categories.stream()
+                .map(String::valueOf)
+                .toList();
+    }
+
+    public List<Product> getDetailCategoryItem(String detailCategory) {
+        return productRepositoryImpl.findProductWithCategory(detailCategory);
+    }
+
+    public Product saveProduct(ProductDto productDto) {
+        Product product = new Product();
+        product.setTitle(productDto.getTitle());
+        product.setPrice(productDto.getPrice());
+        product.setCategory(productDto.getCategory());
+        product.setDescription(productDto.getDescription());
+        product.setImage(productDto.getImage());
+
+        return productRepository.save(product);
+    }
+
+    public Product updateProduct(Long productId, ProductDto productDto) {
+        Product findProduct = findById(productId);
+
+        findProduct.setTitle(productDto.getTitle());
+        findProduct.setPrice(productDto.getPrice());
+        findProduct.setCategory(productDto.getCategory());
+        findProduct.setDescription(productDto.getDescription());
+        findProduct.setImage(productDto.getImage());
+
+        return productRepository.save(findProduct);
+    }
+
+    public Product deleteProduct(Long productId) {
+        Product result = findById(productId);
+        productRepository.deleteById(productId);
+
+        return result;
+    }
+
+    private Product findById(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이템입니다."));
     }
 }
