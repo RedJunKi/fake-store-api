@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Geolocation {
-    private String lat;
-    private String lng;
+public class Name {
+
+    private String firstName;
+    private String lastName;
 }

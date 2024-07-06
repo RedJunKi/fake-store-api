@@ -1,5 +1,6 @@
 package com.project.fake_store_api.domain.cart;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.project.fake_store_api.domain.product.Product;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -22,6 +23,7 @@ public class CartItem {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     private Cart cart;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -1,5 +1,6 @@
 package com.project.fake_store_api.domain.user;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.fake_store_api.domain.cart.Cart;
 import com.project.fake_store_api.domain.common.BaseTimeEntity;
 import com.project.fake_store_api.domain.user.embeded_class.Address;
@@ -39,5 +40,6 @@ public class User extends BaseTimeEntity {
     private Address address;
     private String phone;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Cart> carts = new ArrayList<>();
 }

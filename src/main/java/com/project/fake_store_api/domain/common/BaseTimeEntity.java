@@ -6,6 +6,7 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -17,5 +18,4 @@ public class BaseTimeEntity {
 
     @Temporal(TemporalType.DATE)
     private Date createdAt;
-
 }

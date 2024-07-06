@@ -85,7 +85,7 @@ public class ProductController {
 
         } else if (condition.equals("desc")) {
             return products.stream()
-                    .sorted(Comparator.comparing(Product::getId))
+                    .sorted(Comparator.comparing(Product::getId).reversed())
                     .toList();
         } else {
             return products;

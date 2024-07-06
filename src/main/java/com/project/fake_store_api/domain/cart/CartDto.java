@@ -10,6 +10,5 @@ public class CartDto {
 
     private Long userId;
     private Date date;
-    @NotEmpty
-    private List<CartItem> cartItem;
+    private List<CartItemDto> cartItems;
 }

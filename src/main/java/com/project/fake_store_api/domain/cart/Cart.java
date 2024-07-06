@@ -1,5 +1,7 @@
 package com.project.fake_store_api.domain.cart;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.fake_store_api.domain.common.BaseTimeEntity;
 import com.project.fake_store_api.domain.user.User;
 import jakarta.persistence.CascadeType;
@@ -27,9 +29,11 @@ public class Cart extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonBackReference
     private User user;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<CartItem> cartItems = new ArrayList<>();
 
 
