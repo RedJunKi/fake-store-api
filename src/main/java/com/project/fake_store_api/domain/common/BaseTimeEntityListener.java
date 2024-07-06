@@ -10,13 +10,7 @@ public class BaseTimeEntityListener {
 
     @PrePersist
     public void prePersist(BaseTimeEntity entity) {
-        Date now = new Date();
-        entity.setCreatedAt(now);
-        entity.setModifiedAt(now);
+        entity.setCreatedAt(new Date());
     }
 
-    @PreUpdate
-    public void preUpdate(BaseTimeEntity entity) {
-        entity.setModifiedAt(new Date());
-    }
 }

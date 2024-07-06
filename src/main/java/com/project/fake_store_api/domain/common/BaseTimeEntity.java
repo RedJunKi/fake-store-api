@@ -15,10 +15,7 @@ import java.util.Date;
 @EntityListeners(BaseTimeEntityListener.class)
 public class BaseTimeEntity {
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date createdAt;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date modifiedAt;
 
 }
