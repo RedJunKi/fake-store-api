@@ -8,12 +8,14 @@ import com.project.fake_store_api.domain.user.embeded_class.Geolocation;
 import com.project.fake_store_api.domain.user.embeded_class.Name;
 import com.project.fake_store_api.domain.util.UserMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -79,11 +81,15 @@ public class UserService {
     }
 
     public User login(UserLoginDto userLoginDto) {
+        String email = userLoginDto.getEmail();
+        String password = userLoginDto.getPassword();
+        log.info("email = {}", email);
+        log.info("password = {}", password);
 
-        User user = userRepository.findByEmail(userLoginDto.getEmail()).orElseThrow(() -> new IllegalArgumentException("로그인 실패"));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("로그인 실패, 찾는 아이디 없음"));
 
-        if (!passwordEncoder.matches(userLoginDto.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("로그인 실패");
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new IllegalArgumentException("로그인 실패, 비밀번호 매칭안됨");
         }
 
         return user;

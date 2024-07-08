@@ -1,6 +1,8 @@
 package com.project.fake_store_api.domain.user;
 
 import com.project.fake_store_api.domain.role.Role;
+import com.project.fake_store_api.security.token.TokenResponseDto;
+import com.project.fake_store_api.security.util.JwtTokenizer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final JwtTokenizer jwtTokenizer;
 
     @GetMapping
     public ResponseEntity<List<UserDto>> getUsers(@RequestParam(value = "limit", required = false) Long limit,
@@ -40,20 +43,28 @@ public class UserController {
         return ResponseEntity.ok(result);
     }
 
-//    @PostMapping("/login")
-//    public ResponseEntity login(@Validated @RequestBody UserLoginDto userLoginDto, BindingResult bindingResult) {
-//        if (bindingResult.hasErrors()) {
-//            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-//        }
-//
-//        User user = userService.login(userLoginDto);
-//
-//        List<String> roles = user.getRoles().stream()
-//                .map(Role::getRoleStatus)
-//                .map(String::valueOf)
-//                .toList();
-//
-//    }
+    @PostMapping("/login")
+    public ResponseEntity<TokenResponseDto> login(@Validated @RequestBody UserLoginDto userLoginDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
+        User user = userService.login(userLoginDto);
+
+        List<String> roles = user.getRoles().stream()
+                .map(Role::getRoleStatus)
+                .map(String::valueOf)
+                .toList();
+
+        String accessToken = jwtTokenizer.createAccessToken(user.getId(), user.getEmail(), roles);
+        String refreshToken = jwtTokenizer.createRefreshToken(user.getId(), user.getEmail(), roles);
+
+        TokenResponseDto result = new TokenResponseDto();
+        result.setAccessToken(accessToken);
+        result.setRefreshToken(refreshToken);
+
+        return ResponseEntity.ok(result);
+    }
 
     @PutMapping("/{userId}")
     public ResponseEntity<UserDto> updateUser(@PathVariable("userId") Long userId, @RequestBody UserDto userDto) {
