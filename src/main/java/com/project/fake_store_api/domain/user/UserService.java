@@ -1,15 +1,18 @@
 package com.project.fake_store_api.domain.user;
 
+import com.project.fake_store_api.domain.role.Role;
+import com.project.fake_store_api.domain.role.RoleRepository;
+import com.project.fake_store_api.domain.role.RoleStatus;
 import com.project.fake_store_api.domain.user.embeded_class.Address;
 import com.project.fake_store_api.domain.user.embeded_class.Geolocation;
 import com.project.fake_store_api.domain.user.embeded_class.Name;
 import com.project.fake_store_api.domain.util.UserMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -18,6 +21,8 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserRepositoryImpl userRepositoryImpl;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public List<UserDto> findAll() {
         List<User> userList = userRepository.findAll();
@@ -41,10 +46,17 @@ public class UserService {
     public UserDto save(UserDto userDto) {
         ValidateDuplicateEmail(userDto.getEmail());
 
+
         User user = createUserFromUserDto(new User(), userDto);
+        setRole(user);
 
         User result = userRepository.save(user);
         return UserMapper.toDto(result);
+    }
+
+    private void setRole(User user) {
+        Role role = roleRepository.findByRoleStatus(RoleStatus.ROLE_USER);
+        user.getRoles().add(role);
     }
 
     private void ValidateDuplicateEmail(String email) {
@@ -66,10 +78,21 @@ public class UserService {
         return UserMapper.toDto(user);
     }
 
-    private static User createUserFromUserDto(User user, UserDto userDto) {
+    public User login(UserLoginDto userLoginDto) {
+
+        User user = userRepository.findByEmail(userLoginDto.getEmail()).orElseThrow(() -> new IllegalArgumentException("로그인 실패"));
+
+        if (!passwordEncoder.matches(userLoginDto.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("로그인 실패");
+        }
+
+        return user;
+    }
+
+    private User createUserFromUserDto(User user, UserDto userDto) {
         user.setEmail(userDto.getEmail());
         user.setUsername(userDto.getUsername());
-        user.setPassword(userDto.getPassword());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setName(Name.builder()
                 .firstName(userDto.getNameDto().getFirstName())
                 .lastName(userDto.getNameDto().getLastName())

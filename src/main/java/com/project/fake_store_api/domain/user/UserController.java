@@ -1,7 +1,11 @@
 package com.project.fake_store_api.domain.user;
 
+import com.project.fake_store_api.domain.role.Role;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Comparator;
@@ -35,6 +39,21 @@ public class UserController {
         UserDto result = userService.save(userDto);
         return ResponseEntity.ok(result);
     }
+
+//    @PostMapping("/login")
+//    public ResponseEntity login(@Validated @RequestBody UserLoginDto userLoginDto, BindingResult bindingResult) {
+//        if (bindingResult.hasErrors()) {
+//            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+//        }
+//
+//        User user = userService.login(userLoginDto);
+//
+//        List<String> roles = user.getRoles().stream()
+//                .map(Role::getRoleStatus)
+//                .map(String::valueOf)
+//                .toList();
+//
+//    }
 
     @PutMapping("/{userId}")
     public ResponseEntity<UserDto> updateUser(@PathVariable("userId") Long userId, @RequestBody UserDto userDto) {
