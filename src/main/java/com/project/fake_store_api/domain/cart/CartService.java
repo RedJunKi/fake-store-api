@@ -10,6 +10,8 @@ import com.project.fake_store_api.domain.product.ProductRepository;
 import com.project.fake_store_api.domain.user.User;
 import com.project.fake_store_api.domain.user.UserRepository;
 import com.project.fake_store_api.domain.util.CartMapper;
+import com.project.fake_store_api.global.error.BusinessLogicException;
+import com.project.fake_store_api.global.error.ExceptionCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -48,12 +50,12 @@ public class CartService {
     }
 
     private Cart findById(Long cartId) {
-        return cartRepository.findById(cartId).orElseThrow(() -> new IllegalArgumentException("해당 카트가 없습니다."));
+        return cartRepository.findById(cartId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.CART_NOT_FOUND));
     }
 
     public CartResponseDto save(CartDto cartDto) {
         User user = userRepository.findById(cartDto.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
 
         Cart cart = new Cart();
         cart.setUser(user);
@@ -68,7 +70,7 @@ public class CartService {
 
     public List<CartResponseDto> findUserCarts(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
 
         return user.getCarts().stream()
                 .map(CartMapper::toDto)

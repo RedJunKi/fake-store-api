@@ -44,8 +44,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Preflight requests should be allowed without authentication
                         .requestMatchers("/signup", "/login", "/users/refresh", "/users/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/**").hasAnyRole("USER", "MANAGER", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/**").hasAnyRole("USER", "MANAGER", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception

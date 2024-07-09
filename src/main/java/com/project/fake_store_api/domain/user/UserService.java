@@ -7,6 +7,8 @@ import com.project.fake_store_api.domain.user.embeded_class.Address;
 import com.project.fake_store_api.domain.user.embeded_class.Geolocation;
 import com.project.fake_store_api.domain.user.embeded_class.Name;
 import com.project.fake_store_api.domain.util.UserMapper;
+import com.project.fake_store_api.global.error.BusinessLogicException;
+import com.project.fake_store_api.global.error.ExceptionCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,7 +36,7 @@ public class UserService {
     }
 
     public UserDto findOne(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("해당 유저가 존재하지 않습니다."));
+        User user = userRepository.findById(userId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
         return UserMapper.toDto(user);
     }
 
@@ -63,18 +65,18 @@ public class UserService {
 
     private void ValidateDuplicateEmail(String email) {
         if (userRepository.findByEmail(email).isPresent()) {
-            throw new IllegalStateException("이미 가입된 이메일입니다.");
+            throw new BusinessLogicException(ExceptionCode.USER_DUPLICATE);
         }
     }
 
     public UserDto update(Long userId, UserDto userDto) {
-        User user = createUserFromUserDto(userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("해당 회원이 존재하지 않습니다.")), userDto);
+        User user = createUserFromUserDto(userRepository.findById(userId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND)), userDto);
 
         return UserMapper.toDto(user);
     }
 
     public UserDto delete(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("해당 회원이 존재하지 않습니다."));
+        User user = userRepository.findById(userId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
         userRepository.delete(user);
 
         return UserMapper.toDto(user);
@@ -86,10 +88,10 @@ public class UserService {
         log.info("email = {}", email);
         log.info("password = {}", password);
 
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("로그인 실패, 찾는 아이디 없음"));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new IllegalArgumentException("로그인 실패, 비밀번호 매칭안됨");
+            throw new BusinessLogicException(ExceptionCode.PASSWORD_MISMATCH);
         }
 
         return user;

@@ -20,7 +20,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         String exception = (String) request.getAttribute("exception");
-        log.error("Commence Get Exception : {}", exception);
+        log.error("Commence Get Exception : {}", exception, authException);
 
         if (exception == null) {
             log.error("entry point >> exception is null");

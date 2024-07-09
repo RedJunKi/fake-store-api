@@ -1,5 +1,7 @@
 package com.project.fake_store_api.domain.product;
 
+import com.project.fake_store_api.global.error.BusinessLogicException;
+import com.project.fake_store_api.global.error.ExceptionCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -73,6 +75,6 @@ public class ProductService {
 
     private Product findById(Long productId) {
         return productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이템입니다."));
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.ITEM_NOT_FOUND));
     }
 }
