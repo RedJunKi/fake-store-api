@@ -1,6 +1,9 @@
 package com.project.fake_store_api.domain.product;
 
 import java.util.Comparator;
+
+import com.project.fake_store_api.global.annotation.Retry;
+import com.project.fake_store_api.global.annotation.Trace;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -15,11 +18,19 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+    private static int seq = 0;
 
+    @Trace
+    @Retry
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts(@RequestParam(value = "limit", required = false) Long limit,
                                                        @RequestParam(value = "sort", required = false) String condition) {
 
+        seq++;
+
+        if (seq % 2 == 0) {
+            throw new IllegalArgumentException("Retry 예외 발생");
+        }
         List<Product> result = fetchProducts(limit);
         result = sortProducts(result ,condition);
 

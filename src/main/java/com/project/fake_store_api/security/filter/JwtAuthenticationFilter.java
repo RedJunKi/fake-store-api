@@ -77,7 +77,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authorization = request.getHeader("Authorization");
         if (StringUtils.hasText(authorization) && authorization.startsWith("Bearer ")){
             String[] arr = authorization.split(" ");
-            log.info("token={}",arr[1]);
             return arr[1];
         }
         return null;

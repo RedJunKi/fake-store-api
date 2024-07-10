@@ -1,6 +1,7 @@
 package com.project.fake_store_api.domain.user;
 
 import com.project.fake_store_api.domain.role.Role;
+import com.project.fake_store_api.global.annotation.Trace;
 import com.project.fake_store_api.security.token.TokenResponseDto;
 import com.project.fake_store_api.security.util.JwtTokenizer;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class UserController {
     private final UserService userService;
     private final JwtTokenizer jwtTokenizer;
 
+    @Trace
     @GetMapping
     public ResponseEntity<List<UserDto>> getUsers(@RequestParam(value = "limit", required = false) Long limit,
                                                   @RequestParam(value = "sort", required = false) String condition) {

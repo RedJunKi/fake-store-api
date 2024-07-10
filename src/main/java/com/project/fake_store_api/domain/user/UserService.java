@@ -85,8 +85,6 @@ public class UserService {
     public User login(UserLoginDto userLoginDto) {
         String email = userLoginDto.getEmail();
         String password = userLoginDto.getPassword();
-        log.info("email = {}", email);
-        log.info("password = {}", password);
 
         User user = userRepository.findByEmail(email).orElseThrow(() -> new BusinessLogicException(ExceptionCode.USER_NOT_FOUND));
 

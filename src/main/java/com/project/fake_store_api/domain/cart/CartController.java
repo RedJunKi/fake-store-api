@@ -3,6 +3,8 @@ package com.project.fake_store_api.domain.cart;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+
+import com.project.fake_store_api.global.annotation.Trace;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -18,6 +20,7 @@ public class CartController {
 
     private final CartService cartService;
 
+    @Trace
     @GetMapping
     public ResponseEntity<List<CartResponseDto>> getAllCarts(@RequestParam(value = "limit", required = false) Long limit,
                                                              @RequestParam(value = "sort", required = false) String condition,
@@ -75,6 +78,7 @@ public class CartController {
         }
     }
 
+    @Trace
     private List<CartResponseDto> periodCarts(List<CartResponseDto> carts, Date startDate, Date endDate) {
 
         if (startDate != null && endDate != null) {
@@ -103,7 +107,6 @@ public class CartController {
         if (condition == null) {
             return carts;
         }
-        log.info("condition={}", condition);
 
         if (condition.equals("asc")) {
             return carts.stream()

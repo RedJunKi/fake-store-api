@@ -70,7 +70,6 @@ public class JwtTokenizer {
     }
 
     private Jws<Claims> parseToken(String token, SecretKey secretKey) {
-        log.info("Parsing Token: {}", token);
         return Jwts.parserBuilder()
                 .setSigningKey(secretKey)
                 .build()
