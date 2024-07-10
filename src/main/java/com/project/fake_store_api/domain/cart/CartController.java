@@ -47,7 +47,7 @@ public class CartController {
     }
 
     @PostMapping
-    public ResponseEntity<CartResponseDto> saveCart(@RequestBody @Validated CartDto cartDto) {
+    public ResponseEntity<CartResponseDto> saveCart(@RequestBody CartDto cartDto) {
         CartResponseDto cart = cartService.save(cartDto);
         return ResponseEntity.ok(cart);
     }
