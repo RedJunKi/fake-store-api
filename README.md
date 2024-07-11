@@ -1,3 +1,6 @@
 <h2>ERD</h2>
 --
-![image](https://github.com/RedJunKi/fake-store-api/assets/124676153/a45658e0-4610-4d26-8bbd-b1dd82a628b2)
+<div>
+  ![image](https://github.com/RedJunKi/fake-store-api/assets/124676153/32e40fca-0af9-41c3-9ff5-eb9787354ff9)
+</div>
+
