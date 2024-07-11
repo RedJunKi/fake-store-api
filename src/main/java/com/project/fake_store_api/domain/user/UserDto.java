@@ -18,4 +18,8 @@ public class UserDto {
     private NameDto nameDto;
     private AddressDto addressDto;
     private String phone;
+
+    public UserDto(Long id) {
+        this.id = id;
+    }
 }

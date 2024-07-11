@@ -1,22 +1,18 @@
 package com.project.fake_store_api.domain.cart;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -89,17 +85,51 @@ class CartControllerTest {
     @WithMockUser(username = "user", roles = {"USER"})
     void saveCart() throws Exception {
 
+        CartDto cartDto = new CartDto(1L, new Date(), List.of(new CartItemDto(1L, 5), new CartItemDto(2L, 6)));
+        CartResponseDto carts = new CartResponseDto(1L, 1L, new Date(), List.of(new CartItemDto(1L, 5), new CartItemDto(2L, 6)));
+        when(cartService.updateCart(1L, cartDto)).thenReturn(carts);
+
+        mockMvc.perform(post("/carts")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(cartDto)))
+                .andExpect(status().isOk());
+    }
+
+
+    @Test
+    @WithMockUser(username = "user", roles = {"USER"})
+    void putCart() throws Exception {
+        CartDto cartDto = new CartDto();
+        when(cartService.updateCart(anyLong(), any(CartDto.class))).thenReturn(new CartResponseDto());
+
+        mockMvc.perform(put("/carts/1")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(cartDto)))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void putCart() {
+    @WithMockUser(username = "user", roles = {"USER"})
+    void patchCart() throws Exception {
+        CartDto cartDto = new CartDto();
+        when(cartService.updateCart(anyLong(), any(CartDto.class))).thenReturn(new CartResponseDto());
+
+        mockMvc.perform(patch("/carts/1")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(cartDto)))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void patchCart() {
-    }
+    @WithMockUser(username = "user", roles = {"USER"})
+    void deleteCart() throws Exception {
+        when(cartService.deleteCart(anyLong())).thenReturn(new CartResponseDto());
 
-    @Test
-    void deleteCart() {
+        mockMvc.perform(delete("/carts/1")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
+                .andExpect(status().isOk());
     }
 }
